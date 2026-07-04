@@ -119,19 +119,26 @@ body::before{
 .sq{ position:relative; display:grid; place-items:center; }
 .sq.light{ background:var(--wood-light); }
 .sq.dark{ background:var(--wood-dark); }
-.sq .coord{ position:absolute; font-family:var(--ui); font-size:.62rem; font-weight:700; opacity:.55; }
-.sq .coord.file{ right:3px; bottom:1px; }
-.sq .coord.rank{ left:3px; top:1px; }
-.sq.light .coord{ color:#8a6a3f; } .sq.dark .coord{ color:#eadfc4; }
 
 .piece{
   position:absolute; inset:0;
-  display:flex; align-items:center; justify-content:center;
-  font-size:min(7.2vh,4.6rem); line-height:1; cursor:grab;
-  transition:transform .05s;
+  background-size:contain; background-repeat:no-repeat; background-position:center;
+  cursor:grab;
+  filter:drop-shadow(0 2px 2px rgba(40,25,10,.28));
 }
-.piece.w{ color:#fbf4e2; text-shadow:0 1px 1px #4a3418, 0 0 2px #3a2a12; -webkit-text-stroke:1.4px #4a3418; }
-.piece.b{ color:#26211a; text-shadow:0 1px 0 rgba(255,255,255,.15); -webkit-text-stroke:1.1px #0e0b07; }
+/* Lichess "cburnett" piece set (SVG, perfectly centered) */
+.piece.wK{ background-image:url('https://cdn.jsdelivr.net/gh/lichess-org/lila@master/public/piece/cburnett/wK.svg'); }
+.piece.wQ{ background-image:url('https://cdn.jsdelivr.net/gh/lichess-org/lila@master/public/piece/cburnett/wQ.svg'); }
+.piece.wR{ background-image:url('https://cdn.jsdelivr.net/gh/lichess-org/lila@master/public/piece/cburnett/wR.svg'); }
+.piece.wB{ background-image:url('https://cdn.jsdelivr.net/gh/lichess-org/lila@master/public/piece/cburnett/wB.svg'); }
+.piece.wN{ background-image:url('https://cdn.jsdelivr.net/gh/lichess-org/lila@master/public/piece/cburnett/wN.svg'); }
+.piece.wP{ background-image:url('https://cdn.jsdelivr.net/gh/lichess-org/lila@master/public/piece/cburnett/wP.svg'); }
+.piece.bK{ background-image:url('https://cdn.jsdelivr.net/gh/lichess-org/lila@master/public/piece/cburnett/bK.svg'); }
+.piece.bQ{ background-image:url('https://cdn.jsdelivr.net/gh/lichess-org/lila@master/public/piece/cburnett/bQ.svg'); }
+.piece.bR{ background-image:url('https://cdn.jsdelivr.net/gh/lichess-org/lila@master/public/piece/cburnett/bR.svg'); }
+.piece.bB{ background-image:url('https://cdn.jsdelivr.net/gh/lichess-org/lila@master/public/piece/cburnett/bB.svg'); }
+.piece.bN{ background-image:url('https://cdn.jsdelivr.net/gh/lichess-org/lila@master/public/piece/cburnett/bN.svg'); }
+.piece.bP{ background-image:url('https://cdn.jsdelivr.net/gh/lichess-org/lila@master/public/piece/cburnett/bP.svg'); }
 .sq.selected{ box-shadow: inset 0 0 0 4px var(--sel); }
 .sq.lastmove{ background-image:radial-gradient(circle at center, rgba(220,190,80,.55), rgba(220,190,80,.28)); }
 .sq.check{ background-image:radial-gradient(circle, rgba(190,50,40,.85), transparent 70%); }

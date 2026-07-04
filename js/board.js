@@ -2,7 +2,6 @@
    Renders from FEN, supports click-to-move and drag-and-drop, shows
    legal-move dots, last move and check highlights. */
 
-const GLYPH = { k:'♚', q:'♛', r:'♜', b:'♝', n:'♞', p:'♟' };
 const FILES = 'abcdefgh';
 
 export class Board {
@@ -44,13 +43,6 @@ export class Board {
         const cell = document.createElement('div');
         cell.className = 'sq ' + (((f + r) % 2 === 0) ? 'dark' : 'light');
         cell.dataset.square = sq;
-        // edge coordinates
-        if (f === (this.orientation === 'white' ? 0 : 7)){
-          const c = document.createElement('span'); c.className = 'coord rank'; c.textContent = r+1; cell.appendChild(c);
-        }
-        if (r === (this.orientation === 'white' ? 0 : 7)){
-          const c = document.createElement('span'); c.className = 'coord file'; c.textContent = FILES[f]; cell.appendChild(c);
-        }
         this.el.appendChild(cell);
         this.squares[sq] = cell;
       }
@@ -97,9 +89,8 @@ export class Board {
 
       const p = board[sq];
       if (p){
-        const span = document.createElement('span');
-        span.className = 'piece ' + p.color;
-        span.textContent = GLYPH[p.piece];
+        const span = document.createElement('div');
+        span.className = 'piece ' + p.color + p.piece.toUpperCase(); // e.g. wP, bK
         span.dataset.square = sq;
         cell.appendChild(span);
       }
@@ -165,9 +156,11 @@ export class Board {
       // only spawn a ghost once the pointer clearly moves — a plain click never does
       const dx = e.clientX - this.drag.startX, dy = e.clientY - this.drag.startY;
       if (Math.hypot(dx, dy) < 5 || !this.drag.piece) return;
+      const rect = this.drag.piece.getBoundingClientRect();
       const ghost = this.drag.piece.cloneNode(true);
       ghost.classList.add('drag-ghost');
-      ghost.style.fontSize = getComputedStyle(this.drag.piece).fontSize;
+      ghost.style.width = rect.width + 'px';
+      ghost.style.height = rect.height + 'px';
       document.body.appendChild(ghost);
       this.drag.piece.style.opacity = '0.25';
       this.drag.ghost = ghost;

@@ -134,12 +134,12 @@ function askPromotion(color, cb){
   const modal = $('promo-modal');
   const picker = $('promo-picker');
   picker.innerHTML = '';
-  const glyphs = { q:'♛', r:'♜', b:'♝', n:'♞' };
-  for (const [k, g] of Object.entries(glyphs)){
+  for (const k of ['q','r','b','n']){
     const btn = document.createElement('button');
-    btn.textContent = g;
-    btn.className = color === 'white' ? 'w' : 'b';
-    btn.style.color = color === 'white' ? '#3a2a12' : '#26211a';
+    const pc = document.createElement('div');
+    pc.className = 'piece ' + (color === 'white' ? 'w' : 'b') + k.toUpperCase();
+    pc.style.cssText = 'position:static;width:100%;height:100%;filter:none;';
+    btn.appendChild(pc);
     btn.addEventListener('click', () => { modal.hidden = true; cb(k); });
     picker.appendChild(btn);
   }
