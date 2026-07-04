@@ -125,6 +125,8 @@ body::before{
 .sq.light .coord{ color:#8a6a3f; } .sq.dark .coord{ color:#eadfc4; }
 
 .piece{
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
   font-size:min(7.2vh,4.6rem); line-height:1; cursor:grab;
   transition:transform .05s;
 }
@@ -135,7 +137,7 @@ body::before{
 .sq.check{ background-image:radial-gradient(circle, rgba(190,50,40,.85), transparent 70%); }
 .sq .dot{ position:absolute; width:32%; height:32%; border-radius:50%; background:var(--dest); pointer-events:none; }
 .sq.occupied-dest .dot{ width:88%; height:88%; background:transparent; border:6px solid var(--dest); border-radius:50%; }
-.drag-ghost{ position:fixed; pointer-events:none; z-index:1000; transform:translate(-50%,-50%); }
+.drag-ghost{ position:fixed; inset:auto; width:auto; height:auto; pointer-events:none; z-index:1000; transform:translate(-50%,-50%); }
 
 .board-controls{ display:flex; align-items:center; gap:.3rem; margin-top:.6rem; flex-wrap:wrap; }
 
