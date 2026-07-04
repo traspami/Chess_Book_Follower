@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ChessBook — study your chess books</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">♞</span>
+      <span class="brand-name">ChessBook</span>
+    </div>
+    <div class="topbar-actions">
+      <button id="btn-import-pgn" class="btn ghost" title="Load a study you exported earlier">Import PGN</button>
+      <button id="btn-download-pgn" class="btn" title="Download the current game as .pgn">Save .pgn</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- ============ BOOK PANEL ============ -->
+    <section class="panel book-panel" id="book-panel">
+      <div class="panel-toolbar">
+        <label class="btn file-btn" title="Upload a PDF chess book">
+          <input type="file" id="pdf-input" accept="application/pdf" hidden />
+          Upload PDF
+        </label>
+        <select id="library-select" class="select" title="Your stored books"></select>
+        <span class="spacer"></span>
+        <button class="icon-btn" id="page-prev" title="Previous page">‹</button>
+        <span class="page-indicator">
+          <input type="number" id="page-num" min="1" value="1" />
+          <span>/ <span id="page-count">–</span></span>
+        </span>
+        <button class="icon-btn" id="page-next" title="Next page">›</button>
+      </div>
+
+      <div class="panel-toolbar sub">
+        <button class="icon-btn" id="zoom-out" title="Smaller">A–</button>
+        <button class="icon-btn" id="zoom-in" title="Bigger">A+</button>
+        <label class="toggle" title="Split 2-column pages into a single readable column">
+          <input type="checkbox" id="single-col" checked />
+          <span>Single column</span>
+        </label>
+        <span class="split-control" id="split-control">
+          <span class="hint">gutter</span>
+          <input type="range" id="split-range" min="0.35" max="0.65" step="0.01" value="0.5" />
+        </span>
+        <span class="spacer"></span>
+        <button class="icon-btn" id="bm-add" title="Bookmark this page">☆</button>
+        <select id="bm-select" class="select small" title="Jump to a bookmark"><option value="">Bookmarks</option></select>
+      </div>
+
+      <div class="reader" id="reader">
+        <div class="reader-empty" id="reader-empty">
+          <div class="reader-empty-inner">
+            <div class="big-mark">📖♟</div>
+            <h2>Open a chess book</h2>
+            <p>Upload a <strong>.pdf</strong> to start. Two-column pages are split into a single wide column so the text stays large while you scroll.</p>
+          </div>
+        </div>
+        <div id="pages"></div>
+      </div>
+    </section>
+
+    <div class="divider" id="divider"></div>
+
+    <!-- ============ BOARD PANEL ============ -->
+    <section class="panel study-panel">
+      <div class="board-wrap">
+        <div class="board" id="board"></div>
+        <div class="board-controls">
+          <button class="icon-btn" id="nav-start" title="Start">⏮</button>
+          <button class="icon-btn" id="nav-back" title="Back">◀</button>
+          <button class="icon-btn" id="nav-fwd" title="Forward">▶</button>
+          <button class="icon-btn" id="nav-end" title="End of line">⏭</button>
+          <span class="spacer"></span>
+          <button class="icon-btn" id="board-flip" title="Flip board">⇅</button>
+          <button class="icon-btn" id="board-reset" title="New game / clear moves">✦ New</button>
+        </div>
+      </div>
+
+      <div class="study">
+        <div class="moves-header">
+          <span>Moves &amp; variations</span>
+          <span class="turn-badge" id="turn-badge">White to move</span>
+        </div>
+        <div class="moves" id="moves"></div>
+
+        <div class="node-tools">
+          <button class="btn ghost tiny" id="mainline-btn" title="Promote this line to the main line">↥ Make main line</button>
+          <button class="btn ghost tiny" id="delete-btn" title="Delete this move and everything after it">✕ Delete from here</button>
+        </div>
+
+        <label class="field-label" for="comment">Comment (transcribe the book's notes here)</label>
+        <textarea id="comment" class="comment" placeholder="Type notes for the current move…"></textarea>
+
+        <details class="tools-details">
+          <summary>Position &amp; export tools</summary>
+          <div class="tool-row">
+            <label class="field-label" for="fen-input">Set up a position (FEN)</label>
+            <div class="inline">
+              <input type="text" id="fen-input" class="text-input" placeholder="paste FEN from a diagram…" />
+              <button class="btn tiny" id="fen-set">Set</button>
+            </div>
+          </div>
+          <div class="tool-row">
+            <label class="field-label">Current FEN</label>
+            <code class="fen-out" id="fen-out"></code>
+          </div>
+          <div class="tool-row inline">
+            <button class="btn tiny" id="save-study">Save study</button>
+            <select id="study-select" class="select small"><option value="">Saved studies…</option></select>
+            <button class="btn tiny ghost" id="delete-study">Delete</button>
+          </div>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <!-- promotion picker -->
+  <div class="modal-backdrop" id="promo-modal" hidden>
+    <div class="promo-picker" id="promo-picker"></div>
+  </div>
+
+  <input type="file" id="pgn-input" accept=".pgn,text/plain" hidden />
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
