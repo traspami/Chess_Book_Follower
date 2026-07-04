@@ -24,6 +24,8 @@
 }
 
 *{ box-sizing:border-box; }
+/* the [hidden] attribute must win even when an element sets display in CSS */
+[hidden]{ display:none !important; }
 html,body{ height:100%; margin:0; }
 body{
   font-family:var(--serif);
