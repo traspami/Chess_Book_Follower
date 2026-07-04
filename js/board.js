@@ -22,6 +22,15 @@ export class Board {
     this.el.addEventListener('pointerdown', e => this._onDown(e));
     window.addEventListener('pointermove', e => this._onMoveEvt(e));
     window.addEventListener('pointerup', e => this._onUp(e));
+    window.addEventListener('pointercancel', () => this._cancelDrag());
+    window.addEventListener('blur', () => this._cancelDrag());
+  }
+
+  _removeGhosts(){ document.querySelectorAll('.drag-ghost').forEach(g => g.remove()); }
+  _cancelDrag(){
+    if (this.drag && this.drag.piece) this.drag.piece.style.opacity = '';
+    this.drag = null;
+    this._removeGhosts();
   }
 
   _buildGrid(){
@@ -52,6 +61,7 @@ export class Board {
   flip(){ this.setOrientation(this.orientation === 'white' ? 'black' : 'white'); }
 
   setPosition({ fen, dests, lastMove, check }){
+    this._cancelDrag();
     this.fen = fen;
     this.dests = dests || {};
     this.lastMove = lastMove || null;
@@ -128,6 +138,7 @@ export class Board {
     const sq = e.target.closest?.('.sq')?.dataset.square;
     if (!sq) return;
     e.preventDefault();
+    this._removeGhosts(); // clear any stray ghost from a previous interaction
 
     // completing a click-move
     if (this.selected && this._isDest(this.selected, sq)){
@@ -136,21 +147,13 @@ export class Board {
       return;
     }
 
-    // selecting a movable piece → also arm a drag
+    // selecting a movable piece → arm a potential drag (ghost is created lazily)
     if (this.dests[sq]){
       this._clearSelection();
       this.selected = sq;
       this._showSelection();
-      const piece = this.squares[sq].querySelector('.piece');
-      if (piece){
-        const ghost = piece.cloneNode(true);
-        ghost.classList.add('drag-ghost');
-        ghost.style.fontSize = getComputedStyle(piece).fontSize;
-        document.body.appendChild(ghost);
-        piece.style.opacity = '0.25';
-        this.drag = { from: sq, ghost, piece, moved: false };
-        this._moveGhost(e.clientX, e.clientY);
-      }
+      this.drag = { from: sq, piece: this.squares[sq].querySelector('.piece'),
+                    ghost: null, moved: false, startX: e.clientX, startY: e.clientY };
       return;
     }
     this._clearSelection();
@@ -158,15 +161,26 @@ export class Board {
 
   _onMoveEvt(e){
     if (!this.drag) return;
+    if (!this.drag.ghost){
+      // only spawn a ghost once the pointer clearly moves — a plain click never does
+      const dx = e.clientX - this.drag.startX, dy = e.clientY - this.drag.startY;
+      if (Math.hypot(dx, dy) < 5 || !this.drag.piece) return;
+      const ghost = this.drag.piece.cloneNode(true);
+      ghost.classList.add('drag-ghost');
+      ghost.style.fontSize = getComputedStyle(this.drag.piece).fontSize;
+      document.body.appendChild(ghost);
+      this.drag.piece.style.opacity = '0.25';
+      this.drag.ghost = ghost;
+    }
     this.drag.moved = true;
     this._moveGhost(e.clientX, e.clientY);
   }
-  _moveGhost(x, y){ if (this.drag){ this.drag.ghost.style.left = x + 'px'; this.drag.ghost.style.top = y + 'px'; } }
+  _moveGhost(x, y){ if (this.drag && this.drag.ghost){ this.drag.ghost.style.left = x + 'px'; this.drag.ghost.style.top = y + 'px'; } }
 
   _onUp(e){
     if (!this.drag) return;
     const { from, ghost, piece, moved } = this.drag;
-    ghost.remove();
+    if (ghost) ghost.remove();
     if (piece) piece.style.opacity = '';
     this.drag = null;
     if (!moved) return; // treat as a plain click — keep selection/dots
